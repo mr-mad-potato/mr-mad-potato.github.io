@@ -1905,7 +1905,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     debug: "env",
     cdn: {"js":{"app":"../../js/app.js","parallax":"../../js/plugins/parallax.js","rightMenu":"../../js/plugins/rightMenu.js","rightMenus":"../../js/plugins/rightMenus.js","sites":"../../js/plugins/tags/sites.js","friends":"../../js/plugins/tags/friends.js","contributors":"../../js/plugins/tags/contributors.js","search":"../../js/search/hexo.js"},"css":{"style":"../../css/style.css"}},
     default: {"avatar":"https://unpkg.com/volantis-static@0.0.1654736714924/media/placeholder/avatar/round/3442075.svg","link":"https://unpkg.com/volantis-static@0.0.1654736714924/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1654736714924/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1654736714924/media/placeholder/image/2659360.svg"},
-    lastupdate: new Date(1698940973228),
+    lastupdate: new Date(1699024648475),
     sidebar: {
       for_page: ["blogger","category","tagcloud","donate"],
       for_post: ["toc"],
@@ -3211,52 +3211,42 @@ window.matchMedia('(prefers-color-scheme: light)').addListener(darkModelListener
 
 
 
-      <script>
-  volantis.layoutHelper("comments",`<div id="giscus_container"></div>`)
-
-  volantis.giscus = {};
-
-  function check_giscus() {
-    if (volantis.dark.mode === "dark") {
-      volantis.giscus.Theme = 'dark';
+      
+<script src="https://gcore.jsdelivr.net/gh/vuejs/vue@2.6.11/dist/vue.runtime.min.js"></script>
+<script src="https://gcore.jsdelivr.net/gh/meteorlxy/vssue@1.4.4/packages/vssue/dist/vssue.github.min.js"></script>
+<script>
+  volantis.css("https://gcore.jsdelivr.net/gh/meteorlxy/vssue@1.4.4/packages/vssue/dist/vssue.min.css");
+  function fancybox_vssue() {
+    if(typeof VolantisFancyBox === "undefined") {
+      const checkFancyBox = setInterval(() => {
+        if(typeof VolantisFancyBox === "undefined") return;
+        clearInterval(checkFancyBox);
+        VolantisFancyBox.bind('#vssue .vssue-comment-main img');
+      })
     } else {
-      volantis.giscus.Theme = 'light';
+      VolantisFancyBox.bind('#vssue .vssue-comment-main img');
     }
-
-    return document.getElementById("giscus_container");
   }
-
-  function pjax_giscus() {
-    const HEAD = check_giscus();
-    if (!HEAD) return;
-    let cfg = Object.assign({"theme":{"light":"light","dark":"dark"}},pdata.commentConfig)
-    const script = document.createElement('script');
-    script.setAttribute('src', 'https://giscus.app/client.js');
-    Object.keys(cfg).forEach(k=>{
-      if (k != "theme") {
-        script.setAttribute('data-'+k, cfg[k]);
+</script>
+<script data-pjax>
+  volantis.layoutHelper("comments",`<div id="vssue"></div>`);
+  new Vue({
+    el: '#vssue',
+    render: h => h('Vssue', {
+      props: {
+        title: "undefined - 疯土豆先生的博客",
+        options: {
+          owner: 'mr-mad-potato',
+          repo: 'mr-mad-potato',
+          clientId: 'cf30f32cebffa62caa156d62df299085f156e80fc5446d26b1fd1763b4d933b8',
+          clientSecret: '4d7535162c9371a89ce1882240634807f1305e1e469904d844e4575248e00813',
+          prefix: '',
+          autoCreateIssue: true,
+        },
       }
     })
-    script.setAttribute('data-theme', volantis.giscus.Theme);
-    script.setAttribute('crossorigin', "anonymous");
-    HEAD.appendChild(script);
-  }
-
-  function dark_giscus() {
-    const HEAD = check_giscus();
-    if (!HEAD) return;
-
-    const message = {
-      setConfig: {
-        theme: volantis.giscus.Theme
-      }
-    };
-    const giscusIframe = document.querySelector('iframe.giscus-frame');
-    giscusIframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-  }
-  pjax_giscus();
-  volantis.pjax.push(pjax_giscus);
-  volantis.dark.push(dark_giscus);
+  })
+  fancybox_vssue();
 </script>
 
     
